@@ -1,11 +1,10 @@
-﻿using Entities.Abstract;
-using Entities.Concrete;
+﻿using Core.Entities.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace DataAccess.Abstract
+namespace Core.DataAccess.Abstract
 {   //class:referans tip
     //IEntity olabilir ya da IEntity den miras alan nesne olabilir (referans tip)
     //new() newlenebilir olması lazım interface newlenemediği için de IEntity devre dışı kalacak ve ortayı karıştıramayacak
