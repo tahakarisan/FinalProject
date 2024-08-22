@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Entities.Concrete
 {
-    public class Product:IEntity
+    public class Product : IEntity
     {
         public int ProductId { get; set; }
         public int CategoryId { get; set; }
@@ -14,3 +14,8 @@ namespace Entities.Concrete
         public short UnitsInStock { get; set; }
     }
 }
+/*
+Bire çok
+bir ürünün bir kategorisi olabilir, ama bir kategorinin birden fazla ürünü olabilir.
+    //var a = context.Set<Product>().Where(p => p.CategoryId == 1);
+ */

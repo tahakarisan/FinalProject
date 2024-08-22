@@ -36,11 +36,11 @@ namespace Business.Concrete
         public IDataResult<List<Product>> GetAll()
         {
             //iş kodları
-            if (DateTime.Now.Hour == 15)
+            if (DateTime.Now.Hour == 12)
             {
                 return new ErrorDataResult<List<Product>>(Messages.ProductListError);
             }
-            return new SuccessDataResult<List<Product>>(Messages.ProductListSuccesfull);
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(),Messages.ProductListSuccesfull);
         }
 
 
@@ -60,7 +60,7 @@ namespace Business.Concrete
 
         public IDataResult<List<ProductDetailDto>> GetProductDetailDtos()
         {
-            if (DateTime.Now.Hour == 15)
+            if(DateTime.Now.Hour == 15)
             {
                 return new ErrorDataResult<List<ProductDetailDto>>(Messages.ProductListError);
             }
