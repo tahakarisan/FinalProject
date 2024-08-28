@@ -1,10 +1,12 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.InMemory;
 using Entities.Concrete;
 using Entities.DTOs;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
@@ -21,26 +23,21 @@ namespace Business.Concrete
             _productDal = productDal;
 
         }
-
         public IResult Add(Product product)
         {
-            if (product.ProductName.Length < 2)
-            {
-                //magic strings
-                return new ErrorResult(Messages.ProductNameError);
-            }
+            
             _productDal.Add(product);
-            return new SuccessResult(Messages.ProductListError);
+            return new SuccessResult("Ürün Eklendi");
         }
 
         public IDataResult<List<Product>> GetAll()
-        {
+        { 
             //iş kodları
-            if (DateTime.Now.Hour == 12)
+            if (DateTime.Now.Hour == 8)
             {
                 return new ErrorDataResult<List<Product>>(Messages.ProductListError);
             }
-            return new SuccessDataResult<List<Product>>(_productDal.GetAll(),Messages.ProductListSuccesfull);
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductListSuccesfull);
         }
 
 
@@ -55,12 +52,12 @@ namespace Business.Concrete
 
         public IDataResult<Product> GetById(int productId)
         {
-          return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId));
+            return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId));
         }
 
         public IDataResult<List<ProductDetailDto>> GetProductDetailDtos()
         {
-            if(DateTime.Now.Hour == 15)
+            if (DateTime.Now.Hour == 15)
             {
                 return new ErrorDataResult<List<ProductDetailDto>>(Messages.ProductListError);
             }
