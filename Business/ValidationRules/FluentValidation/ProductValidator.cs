@@ -18,12 +18,12 @@ namespace Business.ValidationRules.FluentValidation
             RuleFor(p => p.UnitPrice).GreaterThan(0);
             RuleFor(p => p.ProductName).Must(StartWithA);
             RuleFor(p => p.UnitPrice).GreaterThanOrEqualTo(10).When(p => p.CategoryId == 1);
-        }
-
+            
+        } 
         private bool StartWithA(string arg)
         {
-            return arg.StartsWith("A");
+            return arg.StartsWith("a");
         }
     }
 }
- 
+    

@@ -1,6 +1,8 @@
 ﻿using Business.Abstract;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.InMemory;
@@ -9,6 +11,7 @@ using Entities.DTOs;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
@@ -23,9 +26,10 @@ namespace Business.Concrete
             _productDal = productDal;
 
         }
+        [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
-            
+            ValidationTool.Validate(new ProductValidator(),product);
             _productDal.Add(product);
             return new SuccessResult("Ürün Eklendi");
         }
