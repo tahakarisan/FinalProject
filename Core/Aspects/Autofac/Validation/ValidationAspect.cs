@@ -3,10 +3,7 @@ using Core.CrossCuttingConcerns;
 using Core.Utilities.Interceptors;
 using FluentValidation;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Aspects.Autofac.Validation
 {
@@ -19,7 +16,6 @@ namespace Core.Aspects.Autofac.Validation
             {
                 throw new System.Exception("Bu sınıf doğrulama sınıflarıyla uyuşmuyor  ");
             }
-
             _validatorType = validatorType;
         }
         protected override void OnBefore(IInvocation invocation)

@@ -1,4 +1,5 @@
 ﻿
+using Core.Utilities.Results;
 using Entities.Concrete;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Business.Abstract
 {
     public interface ICategoryService
     {
-        List<Category> GetAll();
+        IDataResult<List<Category>> GetAll();
         Category Get(Expression<Func<Category, bool>> filter);
         Category GetById(int categoryId);
     }

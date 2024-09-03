@@ -5,6 +5,7 @@ using Business.Concrete;
 using Business.DependencyResolvers.Autofac;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ builder.Services.AddSwaggerGen();
 //________________________________________________________________________________________
 //BURADA  HAZIR OLAN IOC CONTAINER YERINE KENDÝMÝZÝN OLUÞTURDUÐU AUTOFAC'Ý KULLANIYORUZ   |
 //________________________________________________________________________________________|
+//builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory(options =>options.RegisterModule(new AutoFacBusinessModule())));
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(options =>
 {

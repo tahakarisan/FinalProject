@@ -1,41 +1,45 @@
 ﻿using Business.Abstract;
+using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
-using Core.CrossCuttingConcerns;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
-using DataAccess.Concrete.InMemory;
+using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 using Entities.DTOs;
-using FluentValidation;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+using System.Linq;
 
 namespace Business.Concrete
 {
     public class ProductManager : IProductService
     {
         IProductDal _productDal;
+        ILogger _logger;
+        ICategoryService _categoryService;
 
-        public ProductManager(IProductDal productDal)
+        public ProductManager(IProductDal productDal, ILogger logger, ICategoryService categoryService)
         {
             _productDal = productDal;
-
+            _logger = logger;
+            _categoryService = categoryService;
         }
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
-            ValidationTool.Validate(new ProductValidator(),product);
+            var  result = BusinessRules.Run(CheckIfProductCountOfCategory(product), CheckProductNameIsAgain(product),CheckCategoryCount());
+            if (result != null)
+            {
+                return result;
+            }
             _productDal.Add(product);
-            return new SuccessResult("Ürün Eklendi");
+            return new SuccessResult("Ekleme işlemi tamamlandı");
         }
-
         public IDataResult<List<Product>> GetAll()
-        { 
+        {
             //iş kodları
             if (DateTime.Now.Hour == 8)
             {
@@ -43,8 +47,6 @@ namespace Business.Concrete
             }
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductListSuccesfull);
         }
-
-
         public IDataResult<List<Product>> GetAllByCategoryId(int id)
         {
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryId == id));
@@ -66,6 +68,49 @@ namespace Business.Concrete
                 return new ErrorDataResult<List<ProductDetailDto>>(Messages.ProductListError);
             }
             return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetailDtos());
+        }
+
+        public IResult Update(Product product)
+        {
+
+            var result = _productDal.GetAll(p => p.CategoryId == product.CategoryId).Count;
+            if (result! < 10)
+            {
+                return new ErrorResult("Ürün Güncellenemedi");
+            }
+            _productDal.Update(product);
+            return new SuccessResult("Ürün Güncellendi");
+        }
+
+        private IResult CheckIfProductCountOfCategory(Product product)
+        {
+            //select count gibi  
+            //select count(*) from products where categoryId =1
+            var result = _productDal.GetAll(p => p.CategoryId == product.CategoryId).Count();
+            if (result >= 10)
+            {
+                return new ErrorResult("Verilen kategori adına sınır aşıldı");
+            }
+            return new SuccessResult();
+        }
+        private IResult CheckProductNameIsAgain(Product product)
+        {
+            var result = _productDal.GetAll(p => p.ProductName == product.ProductName).Any();
+            if (result)
+            {
+                return new ErrorResult("Böyle bir ürün zaten veritabanında mevcut");
+            }
+            return new SuccessResult();
+
+        }
+        private IResult CheckCategoryCount()
+        {
+            var result = _categoryService.GetAll();
+            if (result.Data.Count()>15)
+            {
+                return new ErrorResult("Kategori sayısı aşıldı");
+            }
+            return new SuccessResult("Ürün eklendi");
         }
     }
 }
