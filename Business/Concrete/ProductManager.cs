@@ -27,10 +27,12 @@ namespace Business.Concrete
             _logger = logger;
             _categoryService = categoryService;
         }
+        //Claim 
+        [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
-            var  result = BusinessRules.Run(CheckIfProductCountOfCategory(product), CheckProductNameIsAgain(product),CheckCategoryCount());
+            IResult result = BusinessRules.Run(CheckIfProductCountOfCategory(product), CheckProductNameIsAgain(product),CheckCategoryCount());
             if (result != null)
             {
                 return result;
