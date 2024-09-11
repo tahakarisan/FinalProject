@@ -12,5 +12,6 @@ namespace Business.Constants
         public static string ProductNameError = "Ürün Eklenemedi";
         public static string ProductListError = "Ürün Listelenemedi";
         public static string ProductListSuccesfull = "Ürün Listelendi";
+        public static string AuthorizationDenied = "Yetki yok";
     }
 }
