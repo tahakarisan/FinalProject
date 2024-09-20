@@ -1,6 +1,5 @@
 ﻿
 using Core.Entities.Concrete;
-using Core.Security.Encryption;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
@@ -10,12 +9,14 @@ using System;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
 using Core.Extensions;
+using Core.Utilities.Security.Encryption;
 
-namespace Core.Security.JWT
+namespace Core.Utilities.Security.JWT
 {
     public class JwtHelper : ITokenHelper
     {
-        public IConfiguration Configuration { get; }
+        //public IConfiguration Configuration { get; set; }
+        IConfiguration Configuration;
         private TokenOptions _tokenOptions;
         private DateTime _accessTokenExpiration;
         public JwtHelper(IConfiguration configuration)
@@ -35,7 +36,7 @@ namespace Core.Security.JWT
             return new AccessToken
             {
                 Token = token,
-                Expiration = _accessTokenExpiration
+                Expiration = _accessTokenExpiration 
             };
 
         }
@@ -43,7 +44,7 @@ namespace Core.Security.JWT
         public JwtSecurityToken CreateJwtSecurityToken(TokenOptions tokenOptions, User user,
             SigningCredentials signingCredentials, List<OperationClaim> operationClaims)
         {
-            var jwt = new JwtSecurityToken(
+            var jwt = new JwtSecurityToken(              
                 issuer: tokenOptions.Issuer,
                 audience: tokenOptions.Audience,
                 expires: _accessTokenExpiration,

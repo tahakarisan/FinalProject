@@ -27,7 +27,12 @@ namespace Core.Extensions
 
         public static void AddRoles(this ICollection<Claim> claims, string[] roles)
         {
-            roles.ToList().ForEach(role => claims.Add(new Claim(ClaimTypes.Role, role)));
+            //roles.ToList().ForEach(role => claims.Add(new Claim(ClaimTypes.Role, role))); line yazılış
+            foreach (var role in roles)
+            {
+                role.ToList();
+                claims.Add(new Claim(ClaimTypes.Role,role));
+            }
         }
     }
 }

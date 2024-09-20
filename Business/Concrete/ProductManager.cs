@@ -29,15 +29,15 @@ namespace Business.Concrete
             _categoryService = categoryService;
         }
         //Claim 
-        [SecuredOperation("product.add,admin")]
+        [SecuredOperation("product.add")]
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
-            IResult result = BusinessRules.Run(CheckIfProductCountOfCategory(product), CheckProductNameIsAgain(product),CheckCategoryCount());
-            if (result != null)
-            {
-                return result;
-            }
+            //IResult result = BusinessRules.Run(CheckIfProductCountOfCategory(product), CheckProductNameIsAgain(product), CheckCategoryCount());
+            //if (result != null)
+            //{
+            //    return result;
+            //}
             _productDal.Add(product);
             return new SuccessResult("Ekleme işlemi tamamlandı");
         }
@@ -109,7 +109,7 @@ namespace Business.Concrete
         private IResult CheckCategoryCount()
         {
             var result = _categoryService.GetAll();
-            if (result.Data.Count()>15)
+            if (result.Data.Count() > 15)
             {
                 return new ErrorResult("Kategori sayısı aşıldı");
             }

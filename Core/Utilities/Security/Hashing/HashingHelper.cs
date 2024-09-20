@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Security.Hashing
+namespace Core.Utilities.Security.Hashing
 {
     public class HashingHelper
     {
@@ -19,7 +19,7 @@ namespace Core.Security.Hashing
         }
         public static bool VerifyPasswordHash(string password, byte[] passswordHash, byte[] passwordSalt)
         {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
             {
                 var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
                 for (int i = 0; i < computedHash.Length; i++)
@@ -28,7 +28,7 @@ namespace Core.Security.Hashing
                     {
                         return true;
                     }
-                    
+
                 }
                 return false;
             }
