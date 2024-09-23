@@ -3,6 +3,8 @@ using Business.BusinessAspects.Autofac;
 using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Cache;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Business;
 using Core.Utilities.Results;
@@ -29,18 +31,20 @@ namespace Business.Concrete
             _categoryService = categoryService;
         }
         //Claim 
-        [SecuredOperation("product.add")]
+        //[SecuredOperation("product.add")]
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
         {
-            //IResult result = BusinessRules.Run(CheckIfProductCountOfCategory(product), CheckProductNameIsAgain(product), CheckCategoryCount());
-            //if (result != null)
-            //{
-            //    return result;
-            //}
+            IResult result = BusinessRules.Run(CheckIfProductCountOfCategory(product), CheckProductNameIsAgain(product), CheckCategoryCount());
+            if (result != null)
+            {
+                return result;
+            }
             _productDal.Add(product);
             return new SuccessResult("Ekleme işlemi tamamlandı");
         }
+        [CacheAspect]
         public IDataResult<List<Product>> GetAll()
         {
             //iş kodları
@@ -72,7 +76,7 @@ namespace Business.Concrete
             }
             return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetailDtos());
         }
-
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Update(Product product)
         {
 
@@ -83,6 +87,11 @@ namespace Business.Concrete
             }
             _productDal.Update(product);
             return new SuccessResult("Ürün Güncellendi");
+        }
+        //[TransactionScopeAspect]
+        public IResult AddTransactionalTest(Product product)
+        {
+            return new SuccessResult();
         }
 
         private IResult CheckIfProductCountOfCategory(Product product)
@@ -115,5 +124,6 @@ namespace Business.Concrete
             }
             return new SuccessResult("Ürün eklendi");
         }
+
     }
 }
