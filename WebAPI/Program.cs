@@ -23,13 +23,8 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddCors();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSingleton<IProductService, ProductManager>();
-//builder.Services.AddSingleton<IProductDal, EFProductDal>();
 builder.Services.AddSwaggerGen();
-//
-//________________________________________________________________________________________
-//BURADA  HAZIR OLAN IOC CONTAINER YERINE KENDÝMÝZÝN OLUÞTURDUÐU AUTOFAC'Ý KULLANIYORUZ   |
-//________________________________________________________________________________________|
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory(options => options.RegisterModule(new AutofacBusinessModule())));
 
 builder.Host.ConfigureContainer<ContainerBuilder>(options =>
@@ -62,7 +57,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors(builder=>builder.WithOrigins("http://localhost:4200").AllowAnyHeader());
 app.UseHttpsRedirection();
 app.UseRouting();
 

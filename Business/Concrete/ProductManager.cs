@@ -44,15 +44,16 @@ namespace Business.Concrete
             _productDal.Add(product);
             return new SuccessResult("Ekleme işlemi tamamlandı");
         }
+
         [CacheAspect]
-        public IDataResult<List<Product>> GetAll()
+        public IDataResult<List<ProductDetailDto>> GetAll()
         {
             //iş kodları
             if (DateTime.Now.Hour == 8)
             {
-                return new ErrorDataResult<List<Product>>(Messages.ProductListError);
+                return new ErrorDataResult<List<ProductDetailDto>>(Messages.ProductListError);
             }
-            return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductListSuccesfull);
+            return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetailDtos(), Messages.ProductListSuccesfull);
         }
         public IDataResult<List<Product>> GetAllByCategoryId(int id)
         {
